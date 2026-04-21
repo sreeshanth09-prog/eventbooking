@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Panel - EventBooking</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body { display: flex; min-height: 100vh; background: #f1f5f9; }
+
+        /* ---- Sidebar ---- */
+        .sidebar {
+            width: 240px;
+            background: #0f172a;
+            display: flex;
+            flex-direction: column;
+            padding: 0;
+            flex-shrink: 0;
+            position: fixed;
+            top: 0; left: 0; bottom: 0;
+            z-index: 50;
+        }
+        .sidebar-brand {
+            padding: 1.5rem 1.5rem 1.25rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            color: #fff;
+            font-size: 1.1rem;
+            font-weight: 800;
+            letter-spacing: -0.02em;
+            border-bottom: 1px solid rgba(255,255,255,0.07);
+        }
+        .sidebar-brand i { color: #60a5fa; font-size: 1.2rem; }
+        .sidebar-label {
+            font-size: 0.65rem;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: #64748b;
+            padding: 1.25rem 1.25rem 0.5rem;
+        }
+        .sidebar-nav { display: flex; flex-direction: column; gap: 2px; padding: 0 0.75rem; }
+        .sidebar-link {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.65rem 0.85rem;
+            border-radius: 8px;
+            color: #94a3b8;
+            font-size: 0.9rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.15s;
+            border: none;
+            background: none;
+            width: 100%;
+            text-align: left;
+            text-decoration: none;
+        }
+        .sidebar-link:hover { background: rgba(255,255,255,0.07); color: #e2e8f0; }
+        .sidebar-link.active { background: #2563eb; color: #fff; }
+        .sidebar-link i { width: 18px; text-align: center; font-size: 0.95rem; }
+        .sidebar-badge {
+            margin-left: auto;
+            background: #ef4444;
+            color: white;
+            font-size: 0.7rem;
+            padding: 0.1rem 0.45rem;
+            border-radius: 9999px;
+            font-weight: 700;
+            min-width: 18px;
+            text-align: center;
+        }
+        .sidebar-footer {
+            margin-top: auto;
+            padding: 1rem 1.25rem;
+            border-top: 1px solid rgba(255,255,255,0.07);
+        }
+        .admin-badge {
+            background: linear-gradient(135deg, #1d4ed8, #3b82f6);
+            border-radius: 12px;
+            padding: 0.75rem 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+        .admin-badge i { color: #fff; font-size: 1.1rem; }
+        .admin-badge-info { flex: 1; }
+        .admin-badge-info .name { color: #fff; font-size: 0.85rem; font-weight: 600; }
+        .admin-badge-info .role { color: #93c5fd; font-size: 0.7rem; }
+
+        /* ---- Main Content ---- */
+        .main-content {
+            margin-left: 240px;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+        .admin-topbar {
+            background: #fff;
+            border-bottom: 1px solid #e2e8f0;
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 40;
+        }
+        .admin-topbar h2 { font-size: 1.15rem; letter-spacing: -0.02em; }
+        .admin-topbar p { font-size: 0.8rem; color: #64748b; margin-top: 1px; }
+        .admin-page { padding: 2rem; display: none; }
+        .admin-page.active { display: block; }
+
+        /* Stats Row */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 1.25rem;
+            margin-bottom: 2rem;
+        }
+        .stat-card {
+            background: #fff;
+            border: 1px solid #e2e8f0;
+            border-radius: 14px;
+            padding: 1.25rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .stat-card .stat-label { font-size: 0.8rem; color: #64748b; margin-bottom: 0.4rem; }
+        .stat-card .stat-value { font-size: 1.75rem; font-weight: 800; color: #0f172a; letter-spacing: -0.03em; }
+        .stat-icon {
+            width: 44px; height: 44px;
+            display: flex; align-items: center; justify-content: center;
+            border-radius: 12px;
+            font-size: 1.1rem;
+        }
+
+        /* Tables */
+        .admin-table-wrapper {
+            background: #fff;
+            border: 1px solid #e2e8f0;
+            border-radius: 14px;
+            overflow: hidden;
+        }
+        .admin-table-header {
+            padding: 1.25rem 1.5rem;
+            border-bottom: 1px solid #e2e8f0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .admin-table-header h3 { font-size: 1rem; font-weight: 700; }
+        .admin-table-header span { font-size: 0.8rem; color: #64748b; }
+        table { width: 100%; border-collapse: collapse; }
+        thead { background: #f8fafc; }
+        th { text-align: left; padding: 0.75rem 1.25rem; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.05em; color: #64748b; font-weight: 600; border-bottom: 1px solid #e2e8f0; }
+        td { padding: 1rem 1.25rem; font-size: 0.875rem; color: #1e293b; border-bottom: 1px solid #f1f5f9; vertical-align: middle; }
+        tr:last-child td { border-bottom: none; }
+        tr:hover td { background: #f8fafc; }
+
+        /* Status badges */
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.3rem;
+            padding: 0.25rem 0.65rem;
+            border-radius: 9999px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+        .badge-pending { background: #fef3c7; color: #b45309; }
+        .badge-approved { background: #d1fae5; color: #065f46; }
+        .badge-rejected { background: #fee2e2; color: #991b1b; }
+        .badge-active { background: #dbeafe; color: #1d4ed8; }
+        .badge-soldout { background: #f1f5f9; color: #94a3b8; }
+
+        /* Action buttons */
+        .action-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.35rem;
+            padding: 0.35rem 0.75rem;
+            border-radius: 6px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            border: none;
+            cursor: pointer;
+            transition: all 0.15s;
+        }
+        .action-approve { background: #d1fae5; color: #065f46; }
+        .action-approve:hover { background: #a7f3d0; }
+        .action-reject { background: #fee2e2; color: #991b1b; }
+        .action-reject:hover { background: #fecaca; }
+
+        /* Alert in admin context */
+        .admin-alert {
+            padding: 0.85rem 1.25rem;
+            border-radius: 10px;
+            font-size: 0.87rem;
+            font-weight: 500;
+            display: none;
+            margin-bottom: 1.25rem;
+        }
+        .admin-alert.show { display: block; }
+        .admin-alert.success { background: #ecfdf5; color: #065f46; border: 1px solid #a7f3d0; }
+        .admin-alert.error { background: #fef2f2; color: #991b1b; border: 1px solid #fecaca; }
+
+        @media (max-width: 900px) {
+            .sidebar { width: 60px; }
+            .sidebar-brand span, .sidebar-label, .sidebar-link span, .admin-badge-info { display: none; }
+            .main-content { margin-left: 60px; }
+            .stats-grid { grid-template-columns: repeat(2, 1fr); }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Sidebar -->
+    <aside class="sidebar">
+        <div class="sidebar-brand">
+            <i class="fa-solid fa-shapes"></i>
+            <span>EventBooking</span>
+        </div>
+
+        <div class="sidebar-label">Admin Panel</div>
+        <nav class="sidebar-nav">
+            <button class="sidebar-link active" data-page="overview" onclick="switchPage(this, 'overview')">
+                <i class="fa-solid fa-gauge-high"></i>
+                <span>Overview</span>
+            </button>
+            <button class="sidebar-link" data-page="cancel-requests" onclick="switchPage(this, 'cancel-requests')">
+                <i class="fa-solid fa-triangle-exclamation"></i>
+                <span>Cancel Requests</span>
+                <span class="sidebar-badge" id="requestBadge" style="display:none">0</span>
+            </button>
+            <button class="sidebar-link" data-page="bookings" onclick="switchPage(this, 'bookings')">
+                <i class="fa-solid fa-ticket"></i>
+                <span>All Bookings</span>
+            </button>
+            <button class="sidebar-link" data-page="events" onclick="switchPage(this, 'events')">
+                <i class="fa-solid fa-calendar-star"></i>
+                <span>Events</span>
+            </button>
+            <button class="sidebar-link" data-page="users" onclick="switchPage(this, 'users')">
+                <i class="fa-solid fa-users"></i>
+                <span>Users</span>
+            </button>
+        </nav>
+
+        <div class="sidebar-nav" style="margin-top: 0.5rem;">
+            <a href="index.html" class="sidebar-link">
+                <i class="fa-solid fa-arrow-left"></i>
+                <span>Back to Site</span>
+            </a>
+            <button class="sidebar-link" onclick="logout()" style="color: #f87171;">
+                <i class="fa-solid fa-right-from-bracket"></i>
+                <span>Logout</span>
+            </button>
+        </div>
+
+        <div class="sidebar-footer">
+            <div class="admin-badge">
+                <i class="fa-solid fa-shield-halved"></i>
+                <div class="admin-badge-info">
+                    <div class="name" id="adminName">Admin</div>
+                    <div class="role">Super Admin</div>
+                </div>
+            </div>
+        </div>
+    </aside>
+
+    <!-- Main Content -->
+    <div class="main-content">
+        <div class="admin-topbar">
+            <div>
+                <h2 id="pageTitle">Overview</h2>
+                <p id="pageSubtitle">System overview and recent activity</p>
+            </div>
+            <div style="display:flex; gap: 0.5rem; align-items: center;">
+                <span style="font-size: 0.8rem; color: #64748b;" id="topbarTime"></span>
+            </div>
+        </div>
+
+        <!-- Overview Page -->
+        <div class="admin-page active" id="page-overview">
+            <div class="stats-grid" id="statsGrid">
+                <div class="stat-card"><div><div class="stat-label">Total Events</div><div class="stat-value" id="stat-events">—</div></div><div class="stat-icon" style="background:#dbeafe; color:#2563eb"><i class="fa-solid fa-calendar-star"></i></div></div>
+                <div class="stat-card"><div><div class="stat-label">Total Bookings</div><div class="stat-value" id="stat-bookings">—</div></div><div class="stat-icon" style="background:#d1fae5; color:#059669"><i class="fa-solid fa-ticket"></i></div></div>
+                <div class="stat-card"><div><div class="stat-label">Cancel Requests</div><div class="stat-value" id="stat-requests">—</div></div><div class="stat-icon" style="background:#fee2e2; color:#ef4444"><i class="fa-solid fa-triangle-exclamation"></i></div></div>
+                <div class="stat-card"><div><div class="stat-label">Registered Users</div><div class="stat-value" id="stat-users">—</div></div><div class="stat-icon" style="background:#ede9fe; color:#7c3aed"><i class="fa-solid fa-users"></i></div></div>
+            </div>
+
+            <!-- Recent Pending Cancel Requests -->
+            <div class="admin-table-wrapper">
+                <div class="admin-table-header">
+                    <h3><i class="fa-solid fa-triangle-exclamation" style="color:#ef4444; margin-right:0.5rem;"></i>Pending Cancellation Requests</h3>
+                    <span id="pendingCount">Loading...</span>
+                </div>
+                <div id="overviewCancelTable"></div>
+            </div>
+        </div>
+
+        <!-- Cancel Requests Page -->
+        <div class="admin-page" id="page-cancel-requests">
+            <div id="cancelAlert" class="admin-alert"></div>
+            <div class="admin-table-wrapper">
+                <div class="admin-table-header">
+                    <h3>Cancellation Requests</h3>
+                    <button onclick="loadCancelRequests()" style="background:none; border:none; color:#2563eb; font-size:0.85rem; cursor:pointer;"><i class="fa-solid fa-rotate-right"></i> Refresh</button>
+                </div>
+                <div id="cancelRequestsTable"></div>
+            </div>
+        </div>
+
+        <!-- All Bookings Page -->
+        <div class="admin-page" id="page-bookings">
+            <div class="admin-table-wrapper">
+                <div class="admin-table-header">
+                    <h3>All Bookings</h3>
+                    <button onclick="loadAllBookings()" style="background:none; border:none; color:#2563eb; font-size:0.85rem; cursor:pointer;"><i class="fa-solid fa-rotate-right"></i> Refresh</button>
+                </div>
+                <div id="allBookingsTable"></div>
+            </div>
+        </div>
+
+        <!-- Events Page -->
+        <div class="admin-page" id="page-events">
+            <div class="admin-table-wrapper">
+                <div class="admin-table-header">
+                    <h3>All Events</h3>
+                    <button onclick="loadAdminEvents()" style="background:none; border:none; color:#2563eb; font-size:0.85rem; cursor:pointer;"><i class="fa-solid fa-rotate-right"></i> Refresh</button>
+                </div>
+                <div id="adminEventsTable"></div>
+            </div>
+        </div>
+
+        <!-- Users Page -->
+        <div class="admin-page" id="page-users">
+            <div class="admin-table-wrapper">
+                <div class="admin-table-header">
+                    <h3>Registered Users</h3>
+                    <button onclick="loadUsers()" style="background:none; border:none; color:#2563eb; font-size:0.85rem; cursor:pointer;"><i class="fa-solid fa-rotate-right"></i> Refresh</button>
+                </div>
+                <div id="usersTable"></div>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/api.js"></script>
+    <script src="js/admin.js"></script>
+</body>
+</html>

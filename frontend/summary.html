@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Bookings - EventBooking</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+
+    <div class="navbar-wrapper">
+        <nav class="navbar">
+            <div class="nav-brand">
+                <i class="fa-solid fa-shapes"></i>
+                EventBooking
+            </div>
+            <div class="nav-links">
+                <a href="index.html">Events</a>
+                <a href="summary.html" style="color: var(--primary-color); font-weight: 600;">My Bookings</a>
+                <button onclick="logout()" class="btn btn-outline" style="padding: 0.35rem 0.85rem; font-size: 0.8rem; border-radius: 9999px;">
+                    <i class="fa-solid fa-arrow-right-from-bracket"></i> Logout
+                </button>
+            </div>
+        </nav>
+    </div>
+
+    <div class="container" style="padding-top: 2rem;">
+        <div class="section-header">
+            <div>
+                <h1>My Bookings</h1>
+                <p style="color: var(--text-secondary); margin-top: 0.25rem;">View and manage your upcoming events</p>
+            </div>
+            <a href="index.html" class="btn btn-outline">
+                <i class="fa-solid fa-arrow-left"></i> Browse Events
+            </a>
+        </div>
+
+        <div id="alert" class="alert"></div>
+
+        <div id="bookingsList" class="grid">
+            <p style="color: var(--text-secondary);">Loading bookings...</p>
+        </div>
+    </div>
+
+    <script src="js/api.js"></script>
+    <script src="js/summary.js"></script>
+</body>
+</html>

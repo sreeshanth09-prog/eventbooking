@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - EventBooking</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, #eff6ff 0%, #f9fafb 60%, #eef2ff 100%);
+        }
+
+        .login-wrapper {
+            width: 100%;
+            max-width: 420px;
+            padding: 1rem;
+        }
+
+        .login-brand {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+        .login-brand i {
+            font-size: 2.5rem;
+            color: var(--primary-color);
+            margin-bottom: 0.5rem;
+            display: block;
+        }
+        .login-brand h1 {
+            font-size: 1.75rem;
+            letter-spacing: -0.03em;
+            color: var(--text-main);
+            margin-bottom: 0.25rem;
+        }
+        .login-brand p {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        .role-selector {
+            display: flex;
+            background: var(--border-color);
+            border-radius: 10px;
+            padding: 4px;
+            margin-bottom: 1.75rem;
+            gap: 4px;
+        }
+        .role-tab {
+            flex: 1;
+            padding: 0.6rem 1rem;
+            border-radius: 8px;
+            border: none;
+            background: transparent;
+            cursor: pointer;
+            font-size: 0.875rem;
+            font-weight: 600;
+            color: var(--text-secondary);
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.4rem;
+        }
+        .role-tab.active {
+            background: var(--surface-color);
+            color: var(--primary-color);
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+        .role-tab.admin-tab.active {
+            color: #6d28d9;
+        }
+
+        .demo-hint {
+            background: #f0fdf4;
+            border: 1px solid #bbf7d0;
+            border-radius: 8px;
+            padding: 0.6rem 1rem;
+            margin-bottom: 1.25rem;
+            font-size: 0.8rem;
+            color: #166534;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        .demo-hint.admin-hint {
+            background: #faf5ff;
+            border-color: #e9d5ff;
+            color: #5b21b6;
+        }
+        .demo-hint code {
+            font-family: 'Courier New', monospace;
+            font-weight: 700;
+            background: rgba(0,0,0,0.06);
+            padding: 0 3px;
+            border-radius: 3px;
+        }
+
+        .login-card {
+            background: var(--surface-color);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius);
+            padding: 2rem;
+            box-shadow: var(--shadow-md);
+        }
+
+        .btn-user {
+            background: var(--primary-color);
+            color: white;
+        }
+        .btn-user:hover { background: var(--primary-hover); }
+
+        .btn-admin-login {
+            background: #7c3aed;
+            color: white;
+        }
+        .btn-admin-login:hover { background: #6d28d9; }
+    </style>
+</head>
+<body>
+    <div class="login-wrapper">
+        <div class="login-brand">
+            <i class="fa-solid fa-shapes"></i>
+            <h1>EventBooking</h1>
+            <p>Internal Department Event Ticketing</p>
+        </div>
+
+        <div class="login-card">
+            <!-- Role Selector Tabs -->
+            <div class="role-selector">
+                <button class="role-tab active" id="userTab" onclick="setRole('user')">
+                    <i class="fa-solid fa-user"></i> User Login
+                </button>
+                <button class="role-tab admin-tab" id="adminTab" onclick="setRole('admin')">
+                    <i class="fa-solid fa-shield-halved"></i> Admin Login
+                </button>
+            </div>
+
+            <!-- Demo credential hint -->
+            <div class="demo-hint" id="demoHint">
+                <i class="fa-solid fa-circle-info"></i>
+                Demo: <code>demo@example.com</code> / <code>password123</code>
+            </div>
+
+            <div id="alert" class="alert"></div>
+
+            <form id="loginForm">
+                <div class="form-group">
+                    <label for="email">Email Address</label>
+                    <input type="email" id="email" class="form-control" value="demo@example.com" required>
+                </div>
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <input type="password" id="password" class="form-control" value="password123" required>
+                </div>
+                <button type="submit" id="loginBtn" class="btn btn-user btn-block" style="font-size:1rem; padding:0.85rem;">
+                    <i class="fa-solid fa-arrow-right-to-bracket"></i> Log In
+                </button>
+            </form>
+
+            <p style="margin-top: 1.25rem; text-align: center; font-size: 0.875rem; color: var(--text-secondary);">
+                Don't have an account? <a href="register.html" style="font-weight:600;">Sign up</a>
+            </p>
+        </div>
+    </div>
+
+    <script src="js/api.js"></script>
+    <script src="js/login.js"></script>
+    <script>
+        function setRole(role) {
+            const emailInput = document.getElementById('email');
+            const passwordInput = document.getElementById('password');
+            const loginBtn = document.getElementById('loginBtn');
+            const demoHint = document.getElementById('demoHint');
+            const userTab = document.getElementById('userTab');
+            const adminTab = document.getElementById('adminTab');
+
+            if (role === 'admin') {
+                userTab.classList.remove('active');
+                adminTab.classList.add('active');
+                emailInput.value = 'admin@eventbooking.com';
+                passwordInput.value = 'admin123';
+                loginBtn.className = 'btn btn-admin-login btn-block';
+                loginBtn.style = 'font-size:1rem; padding:0.85rem;';
+                loginBtn.innerHTML = '<i class="fa-solid fa-shield-halved"></i> Login as Admin';
+                demoHint.className = 'demo-hint admin-hint';
+                demoHint.innerHTML = '<i class="fa-solid fa-circle-info"></i> Admin: <code>admin@eventbooking.com</code> / <code>admin123</code>';
+            } else {
+                adminTab.classList.remove('active');
+                userTab.classList.add('active');
+                emailInput.value = 'demo@example.com';
+                passwordInput.value = 'password123';
+                loginBtn.className = 'btn btn-user btn-block';
+                loginBtn.style = 'font-size:1rem; padding:0.85rem;';
+                loginBtn.innerHTML = '<i class="fa-solid fa-arrow-right-to-bracket"></i> Log In';
+                demoHint.className = 'demo-hint';
+                demoHint.innerHTML = '<i class="fa-solid fa-circle-info"></i> Demo: <code>demo@example.com</code> / <code>password123</code>';
+            }
+        }
+    </script>
+</body>
+</html>

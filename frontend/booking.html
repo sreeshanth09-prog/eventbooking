@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Book Event - EventBooking</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+
+    <div class="navbar-wrapper">
+        <nav class="navbar">
+            <div class="nav-brand">
+                <i class="fa-solid fa-shapes"></i>
+                EventBooking
+            </div>
+            <div class="nav-links">
+                <a href="index.html">Events</a>
+                <a href="summary.html">My Bookings</a>
+                <button onclick="logout()" class="btn btn-outline" style="padding: 0.35rem 0.85rem; font-size: 0.8rem; border-radius: 9999px;">
+                    <i class="fa-solid fa-arrow-right-from-bracket"></i> Logout
+                </button>
+            </div>
+        </nav>
+    </div>
+
+    <div class="container" style="max-width: 600px; padding-top: 2rem;">
+        <h1 style="text-align: center; margin-bottom: 2rem;">Secure Your Tickets</h1>
+
+        <div id="alert" class="alert"></div>
+
+        <div id="eventDetails" class="card" style="display: none; margin-bottom: 2rem; flex-direction: column;">
+            <div id="eventName" class="card-title">Event Name</div>
+            <p style="color: var(--text-secondary); margin-bottom: 1rem;" id="eventDateVenue">Date & Venue</p>
+
+            <div style="display: flex; justify-content: space-between; padding-top: 1rem; border-top: 1px solid var(--border-color);">
+                <span>Price per ticket:</span>
+                <span id="ticketPrice" style="font-weight: 600;">₹0.00</span>
+            </div>
+            <div style="display: flex; justify-content: space-between; margin-top: 0.5rem;">
+                <span>Available tickets:</span>
+                <span id="availableTickets" style="font-weight: 600; color: var(--primary-color);">0</span>
+            </div>
+        </div>
+
+        <form id="bookingForm" style="display: none;">
+            <div class="form-group">
+                <label for="ticketCount">Number of Tickets</label>
+                <input type="number" id="ticketCount" class="form-control" min="1" value="1" required>
+            </div>
+
+            <div style="background: var(--bg-color); padding: 1.5rem; border-radius: 12px; margin-bottom: 1.5rem; border: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center;">
+                <span style="font-weight: 500; color: var(--text-secondary);">Total Amount</span>
+                <span id="totalAmount" style="font-size: 1.75rem; font-weight: 800; letter-spacing: -0.03em;">₹0.00</span>
+            </div>
+
+            <button type="submit" id="bookBtn" class="btn btn-primary btn-block" style="font-size: 1.1rem; padding: 1rem;">
+                <i class="fa-solid fa-lock"></i> Confirm & Pay
+            </button>
+            <a href="index.html" class="btn btn-outline btn-block" style="margin-top: 0.75rem; text-align: center;">Cancel</a>
+        </form>
+
+        <div id="loading" style="text-align: center; padding: 2rem; color: var(--text-secondary);">
+            <i class="fa-solid fa-circle-notch fa-spin" style="font-size: 1.5rem; margin-bottom: 1rem; color: var(--primary-color);"></i>
+            <p>Loading event details...</p>
+        </div>
+    </div>
+
+    <!-- Premium Payment Receipt Overlay -->
+    <div class="receipt-overlay" id="receiptOverlay">
+        <div class="receipt-card">
+            <div class="receipt-header">
+                <div class="receipt-success-icon">
+                    <i class="fa-solid fa-check"></i>
+                </div>
+                <h2>Payment Successful</h2>
+                <p>Your tickets have been confirmed</p>
+                <div class="receipt-amount-band">
+                    <div class="label">Amount Paid</div>
+                    <div class="amount" id="receiptAmount">₹0</div>
+                </div>
+            </div>
+
+            <div class="receipt-body">
+                <div class="receipt-notch">
+                    <div class="dashed-line"></div>
+                </div>
+
+                <div class="receipt-divider"><span>Booking Details</span></div>
+
+                <div class="receipt-row">
+                    <span class="row-label"><i class="fa-solid fa-calendar-star"></i> Event</span>
+                    <span class="row-value" id="receiptEvent">—</span>
+                </div>
+                <div class="receipt-row">
+                    <span class="row-label"><i class="fa-solid fa-location-dot"></i> Venue</span>
+                    <span class="row-value" id="receiptVenue">—</span>
+                </div>
+                <div class="receipt-row">
+                    <span class="row-label"><i class="fa-regular fa-calendar"></i> Date</span>
+                    <span class="row-value" id="receiptDate">—</span>
+                </div>
+                <div class="receipt-row">
+                    <span class="row-label"><i class="fa-solid fa-ticket"></i> Tickets</span>
+                    <span class="row-value" id="receiptTickets">—</span>
+                </div>
+                <div class="receipt-row">
+                    <span class="row-label"><i class="fa-regular fa-id-card"></i> Booking ID</span>
+                    <span class="row-value"><span class="receipt-id" id="receiptId">—</span></span>
+                </div>
+            </div>
+
+            <div class="receipt-footer">
+                <a href="summary.html" class="btn btn-primary" style="flex: 1; text-align: center;">
+                    <i class="fa-solid fa-list"></i> View My Bookings
+                </a>
+                <a href="index.html" class="btn btn-outline" style="flex: 1; text-align: center;">Browse More</a>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/api.js"></script>
+    <script src="js/booking.js"></script>
+</body>
+</html>
